@@ -25,12 +25,20 @@ exports.getType = (req, res, next) => {
 exports.createType = (req, res, next) => {
     console.log("createType method");
 
+    console.log(req.body);
     let type = new Type({
         name: req.body.name,
         creationDate: new Date(),
         modificationDate: new Date(),
         active: true
     })
+
+    // let type = new Type({
+    //     name: "Cocktail",
+    //     creationDate: new Date(),
+    //     modificationDate: new Date(),
+    //     active: true
+    // })
 
     type.save()
         .then((saved) => res.status(200).json(saved))

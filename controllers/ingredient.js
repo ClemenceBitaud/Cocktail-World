@@ -36,6 +36,8 @@ exports.createIngredient = (req, res, next) => {
         active: true
     })
 
+    console.log(ingredient);
+
     ingredient.save()
         .then((saved) => res.status(200).json(saved))
         .catch(() => res.status(500).json({message: 'Pb avec la création'}));

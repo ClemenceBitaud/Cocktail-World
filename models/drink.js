@@ -6,7 +6,7 @@ const drinkSchema = mongoose.Schema({
     type: { type: Schema.Types.ObjectId, ref: 'Type' },
     categories: [{ type: Schema.Types.ObjectId, ref: 'Category'}],
     ingredients: [{ type: Schema.Types.ObjectId, ref: 'Ingredient'}],
-    recipe:  { type: Schema.Types.ObjectId, ref: 'Recipe' },
+    recipe: {type: String, required: true},
     creationDate: {type: Date, required: false},
     modificationDate: {type: Date, required: false},
     active: {type: Boolean, required: false}

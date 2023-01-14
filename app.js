@@ -25,7 +25,10 @@ const dbPW = process.env.DB_PW; //dbUserPassword
 const DB = 'mongodb+srv://dbuser:dbUserPassword@clusterwebservice.nwozssf.mongodb.net/?retryWrites=true&w=majority';
 
 mongoose.connect(DB, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => logs.info('Connected to MongoDB'))
+    .then(() =>{
+        console.log('Connected to MongoDB');
+        logs.info('Connected to MongoDB')
+    })
     .catch((err) => {
         logs.error('MongoDB ERROR CONNECT', err)
     });
@@ -35,16 +38,12 @@ app.use(bodyParser.json());
 //routes
 const drinkRoutes = require('./routes/drink');
 const ingredientRoutes = require('./routes/ingredient');
-const recipeRoutes = require('./routes/recipe');
-const stepRoutes = require('./routes/step');
 const categoryRoutes = require('./routes/category');
 const typeRoutes = require('./routes/type');
 const userRoutes = require('./routes/user');
 
 app.use('/api/drinks', drinkRoutes);
 app.use('/api/ingredients', ingredientRoutes);
-app.use('/api/recipes', recipeRoutes);
-app.use('/api/steps', stepRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use ('/api/types', typeRoutes);
 app.use('/api/auth', userRoutes);
