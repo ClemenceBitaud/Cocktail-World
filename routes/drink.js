@@ -8,5 +8,6 @@ router.get('/:id', drinkCtrl.getDrink);
 router.post('/', drinkCtrl.createDrink);
 router.put('/:id', drinkCtrl.updateDrink);
 router.delete('/:id', drinkCtrl.deleteDrink);
+router.get('/search/:search', drinkCtrl.searchDrink);
 
 module.exports = router;

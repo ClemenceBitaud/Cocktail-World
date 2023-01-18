@@ -84,3 +84,37 @@ exports.deleteDrink = (req, res, next) => {
             res.status(400).json({message: 'NOT FOUND', error: err})
         })
 }
+
+exports.searchDrink = (req, res, next) => {
+    console.log("searchDrink method");
+
+    const search = req.params.search.toLowerCase().replace(/\s/g,'');
+
+    Drink.find()
+        .populate('type')
+        .populate('categories')
+        .populate('ingredients')
+        .exec((err, list) => {
+
+            const drinks = [];
+
+            list.forEach(cocktail => {
+                const name = cocktail.name.toLowerCase().replace(/\s/g,'');
+
+                if (name === search){
+                    drinks.push(cocktail);
+                }
+
+                cocktail.ingredients.forEach(ingredient => {
+                    const ingredientName = ingredient.name.toLowerCase().replace(/\s/g,'');
+
+                    if (ingredientName === search){
+                        drinks.push(cocktail);
+                    }
+                })
+            })
+            if (err){res.status(404).json({message: 'NOT FOUND'});}
+            res.status(200).json(drinks);
+        })
+
+}
