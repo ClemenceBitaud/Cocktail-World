@@ -41,11 +41,13 @@ const ingredientRoutes = require('./routes/ingredient');
 const categoryRoutes = require('./routes/category');
 const typeRoutes = require('./routes/type');
 const userRoutes = require('./routes/user');
+const pokemonRoutes = require('./routes/pokemon');
 
 app.use('/api/drinks', drinkRoutes);
 app.use('/api/ingredients', ingredientRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use ('/api/types', typeRoutes);
 app.use('/api/auth', userRoutes);
+app.use('/api/pokemons', pokemonRoutes);
 
 module.exports = app;

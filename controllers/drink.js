@@ -36,6 +36,7 @@ exports.createDrink = (req, res, next) => {
         categories: req.body.categoriesId,
         ingredients: req.body.ingredientsId,
         recipe: req.body.recipe,
+        image: "",
         creationDate: new Date(),
         modificationDate: new Date(),
         active: true
