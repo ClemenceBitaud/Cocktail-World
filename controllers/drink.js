@@ -145,3 +145,19 @@ exports.searchByCategory = (req, res, next) => {
             res.status(200).json(list);
         })
 }
+
+exports.randomDrink = (req, res, next) => {
+    logs.debug("random");
+    Drink.find()
+        .populate('type')
+        .populate('categories')
+        .populate('ingredients')
+        .exec((err, list) => {
+            if (err){res.status(404).json({message: 'NOT FOUND'});}
+
+            const length = list.length;
+            const randomIndex = Math.round(Math.random()*length);
+
+            res.status(200).json(list[randomIndex]);
+        })
+}
