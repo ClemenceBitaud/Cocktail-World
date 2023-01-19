@@ -1,5 +1,4 @@
 const Drink = require("../models/drink");
-const {Schema} = require("mongoose");
 
 exports.getDrinks = (req, res, next) => {
 

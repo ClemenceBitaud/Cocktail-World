@@ -3,7 +3,7 @@ const { combine, timestamp, printf } = format;
 
 const myFormat = printf(({ level, message, timestamp }) => {
     level = level.padEnd(5);
-    //format le timestamp pour être plus joli
+    //TODO format le timestamp pour être plus joli
     return `${timestamp} [${level}]: ${message}`;
 });
 
@@ -24,7 +24,8 @@ const logs = createLogger({
     ],
 });
 
-module.exports = (req, res, next) => { // next() sert à passer le relai au middleware suivant
+// Middleware qui log la route utilisée
+module.exports = (req, res, next) => {
     try {
         const { method, url, baseUrl } = req;
         const log = method + ' ' + baseUrl + url;

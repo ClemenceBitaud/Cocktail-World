@@ -22,6 +22,7 @@ const dbPW = process.env.DB_PW; //dbUserPassword
 // const DB = 'mongodb+srv://'+dbID+':'+dbPW+'@clusterwebservice.nwozssf.mongodb.net/?retryWrites=true&w=majority';
 const DB = 'mongodb+srv://dbuser:dbUserPassword@clusterwebservice.nwozssf.mongodb.net/?retryWrites=true&w=majority';
 
+// Connexion à la base mongo
 mongoose.connect(DB, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() =>{
         console.log('Connected to MongoDB');

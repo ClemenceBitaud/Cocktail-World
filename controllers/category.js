@@ -34,7 +34,6 @@ exports.createCategory = (req, res, next) => {
 }
 
 exports.updateCategory = (req, res, next) => {
-    console.log("updateCategory method");
 
     Category.findById(req.params.id)
         .then((cat) => {
@@ -42,7 +41,6 @@ exports.updateCategory = (req, res, next) => {
             Category.updateOne({ _id: cat.id}, req.body)
                 .then((result) => res.status(200).json(result))
                 .catch((err) => {
-                    console.log(err);
                     res.status(500).json({message: 'CANNOT UPDATE', error: err})
                 })
         })
@@ -52,7 +50,6 @@ exports.updateCategory = (req, res, next) => {
 }
 
 exports.deleteCategory = (req, res, next) => {
-    console.log("deleteCategory method");
 
     Category.findByIdAndDelete(req.params.id)
         .then((result) => {

@@ -1,5 +1,4 @@
 const Pokemon = require("../models/pokemon");
-const {Schema} = require("mongoose");
 const https = require('https')
 
 exports.getPokemons = (req, res, next) => {
