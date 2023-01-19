@@ -1,29 +1,24 @@
 const Category = require('../models/category');
 
 exports.getCategories = (req, res, next) => {
-    console.log("getCategories method");
 
     Category.find()
         .then((list) => res.status(200).json(list))
         .catch((err) => {
-            console.log(err);
-            res.status(404).json({message: 'NOT FOUND'});
+            res.status(404).json({message: 'NOT FOUND', error: err});
         })
 }
 
 exports.getCategory = (req, res, next) => {
-    console.log("getCategory method");
 
     Category.findById(req.params.id)
         .then((obj) => res.status(200).json(obj))
         .catch((err) => {
-            console.log(err);
-            res.status(404).json({message: 'NOT FOUND'});
+            res.status(404).json({message: 'NOT FOUND', error: err});
         })
 }
 
 exports.createCategory = (req, res, next) => {
-    console.log("createCategory method");
 
     let category = new Category({
         name: req.body.name,
@@ -34,7 +29,7 @@ exports.createCategory = (req, res, next) => {
 
     category.save()
         .then((saved) => res.status(200).json(saved))
-        .catch(() => res.status(500).json({message: 'Pb avec la création'}));
+        .catch((err) => res.status(500).json({message: 'Pb avec la création', error: err}));
 
 }
 
@@ -52,8 +47,7 @@ exports.updateCategory = (req, res, next) => {
                 })
         })
         .catch((err) => {
-            console.log(err);
-            res.status(404).json({message: 'NOT FOUND'})
+            res.status(404).json({message: 'NOT FOUND', error: err})
         })
 }
 
@@ -69,7 +63,6 @@ exports.deleteCategory = (req, res, next) => {
             }
         })
         .catch((err) => {
-            console.log(err);
             res.status(400).json({message: 'NOT FOUND', error: err})
         })
 }

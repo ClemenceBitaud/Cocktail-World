@@ -1,40 +1,28 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const {logs} = require("../log");
 
 exports.getUserList = (req, res, next) => {
-    logs.debug("getUserList");
+
     User.find()
         .then((list) => res.status(200).json(list))
         .catch((err) => {
-            console.log(err);
-            res.status(404).json({message: 'NOT FOUND'});
+            res.status(404).json({message: 'NOT FOUND', error: err});
         })
 }
 
 exports.getUser = (req, res, next) => {
-    logs.debug("getUser");
-    if (req.params.id === undefined){
-        logs.debug('getUser - missing id params');
-    }
+
     User.findById(req.params.id)
         .populate('favorites')
         .exec((err, user) => {
-            if (err){res.status(404).json({message: 'NOT FOUND'})}
+            if (err){res.status(404).json({message: 'NOT FOUND', error: err})}
             res.status(200).json(user)
         })
 }
 
 exports.createUser = (req, res, next) => {
-    logs.debug('createUser');
 
-    if (req.body.email === undefined){
-        logs.debug('createUser - email undefined');
-    }
-    if (req.body.password === undefined){
-        logs.debug('createUser - password undefined');
-    }
     bcrypt.hash(req.body.password, 10)
         .then((hash) => {
             let user = new User({
@@ -49,20 +37,13 @@ exports.createUser = (req, res, next) => {
 
             user.save()
                 .then((saved) => res.status(200).json(saved))
-                .catch(() => res.status(500).json({message: 'API REST ERROR: Pb avec la creation'}))
+                .catch((err) => res.status(500).json({message: 'Pb avec la creation', error: err}))
         })
-        .catch(() => res.status(500).json({message: 'API REST ERROR: Pb avec le chiffrement'}))
+        .catch((err) => res.status(500).json({message: 'Pb avec le chiffrement', error: err}))
 
 }
 
 exports.login = (req, res, next) => {
-    logs.debug("login");
-    if (req.body.email === undefined){
-        logs.debug('login - email undefined');
-    }
-    if (req.body.password === undefined){
-        logs.debug('login - password undefined');
-    }
 
     User.findOne({ email: req.body.email })
         .then((user) => {
@@ -72,7 +53,7 @@ exports.login = (req, res, next) => {
                 bcrypt.compare(req.body.password, user.password)
                     .then((valid) => {
                         if (!valid) {
-                            res.status(500).json({message: 'API REST ERROR: COMPARISON FAILED'})
+                            res.status(500).json({message: 'COMPARISON FAILED'})
                         } else {
                             const token = jwt.sign({userId: user._id},'RANDOM_TOKEN_SECRET', { expiresIn: '24h'});
                             user.password = '';
@@ -82,18 +63,15 @@ exports.login = (req, res, next) => {
                             })
                         }
                     })
-                    .catch((err) => res.status(500).json({message: 'API REST ERROR: COMPARISON FAILED'}))
+                    .catch((err) => res.status(500).json({message: 'COMPARISON FAILED', error: err}))
             }
         })
-        .catch(() => res.status(404).json({message: 'NOT FOUND'}))
+        .catch((err) => res.status(404).json({message: 'NOT FOUND', error: err}))
 
 }
 
 exports.updateUser = (req, res, next) => {
-    logs.debug("updateUser");
-    if (req.params.id === undefined){
-        logs.debug('updateUser - missing id params');
-    }
+
     User.findById(req.params.id)
         .then((obj) => {
             req.body.modificationDate = new Date();
@@ -101,14 +79,10 @@ exports.updateUser = (req, res, next) => {
                 .then((result) => res.status(200).json(result))
                 .catch((err) => res.status(500).json({message: 'CANNOT UPDATE', error: err}))
         })
-        .catch(() => res.status(404).json({message: 'NOT FOUND'}))
+        .catch((err) => res.status(404).json({message: 'NOT FOUND', error: err}))
 }
 
 exports.deleteUser = (req, res, next) => {
-    logs.debug("deleteUser");
-    if (req.params.id === undefined){
-        logs.debug('deleteUser - missing id params');
-    }
 
     User.findByIdAndDelete(req.params.id)
         .then((result) => {
@@ -124,13 +98,7 @@ exports.deleteUser = (req, res, next) => {
 }
 
 exports.addFavorite = (req, res, next) => {
-    logs.debug("addFavorite");
-    if (req.params.id === undefined){
-        logs.debug('addFavorite - missing id params');
-    }
-    if (req.body.drinkId === undefined){
-        logs.debug('addFavorite - missing drinkId');
-    }
+
     User.findById(req.params.id)
         .then((user) => {
 
@@ -142,23 +110,16 @@ exports.addFavorite = (req, res, next) => {
                 .catch((err) => res.status(500).json({message: 'CANNOT UPDATE', error: err}))
         })
         .catch((err) => {
-            console.log(err);
-            res.status(404).json({message: 'NOT FOUND'});
+            res.status(404).json({message: 'NOT FOUND', error: err});
         })
 }
 
 exports.deleteFavorite = (req, res, next) => {
-    logs.debug("deleteFavorite");
-    if (req.params.id === undefined){
-        logs.debug('deleteFavorite - missing id params');
-    }
-    if (req.params.idDrink === undefined){
-        logs.debug('deleteFavorite - missing drinkId');
-    }
+
     User.findById(req.params.id)
         .populate('favorites')
         .exec((err, user) => {
-            if (err){res.status(404).json({message: 'NOT FOUND'})}
+            if (err){res.status(404).json({message: 'NOT FOUND', error: err})}
 
             const favorites = user.favorites.filter(cocktail => cocktail.id !== req.params.idDrink);
 

@@ -2,30 +2,23 @@ const Ingredient = require('../models/ingredient');
 
 exports.getIngredients = (req, res, next) => {
 
-    console.log("getIngredients method");
-
     Ingredient.find()
         .then((list) => res.status(200).json(list))
         .catch((err) => {
-            console.log(err);
-            res.status(404).json({message: 'NOT FOUND'});
+            res.status(404).json({message: 'NOT FOUND', error: err});
         })
 }
 
 exports.getIngredient = (req, res, next) => {
 
-    console.log("getIngredient method");
-
     Ingredient.findById(req.params.id)
         .then((obj) => res.status(200).json(obj))
         .catch((err) => {
-            console.log(err);
-            res.status(404).json({message: 'NOT FOUND'});
+            res.status(404).json({message: 'NOT FOUND', error: err});
         })
 }
 
 exports.createIngredient = (req, res, next) => {
-    console.log("createIngredient method");
 
     let ingredient = new Ingredient({
         name: req.body.name,
@@ -34,19 +27,15 @@ exports.createIngredient = (req, res, next) => {
         creationDate: new Date(),
         modificationDate: new Date(),
         active: true
-    })
-
-    console.log(ingredient);
+    });
 
     ingredient.save()
         .then((saved) => res.status(200).json(saved))
-        .catch(() => res.status(500).json({message: 'Pb avec la création'}));
+        .catch((err) => res.status(500).json({message: 'Pb avec la création', error: err}));
 
 }
 
 exports.updateIngredient = (req, res, next) => {
-
-    console.log("updateIngredient method");
 
     Ingredient.findById(req.params.id)
         .then((ing) => {
@@ -54,19 +43,16 @@ exports.updateIngredient = (req, res, next) => {
             Ingredient.updateOne({ _id: ing.id}, req.body)
                 .then((result) => res.status(200).json(result))
                 .catch((err) => {
-                    console.log(err);
                     res.status(500).json({message: 'CANNOT UPDATE', error: err})
                 })
         })
         .catch((err) => {
-            console.log(err);
-            res.status(404).json({message: 'NOT FOUND'})
+            res.status(404).json({message: 'NOT FOUND', error: err})
         })
 
 }
 
 exports.deleteIngredient = (req, res, next) => {
-    console.log("deleteIngredient method");
 
     Ingredient.findByIdAndDelete(req.params.id)
         .then((result) => {
@@ -77,7 +63,6 @@ exports.deleteIngredient = (req, res, next) => {
             }
         })
         .catch((err) => {
-            console.log(err);
             res.status(400).json({message: 'NOT FOUND', error: err})
         })
 }

@@ -16,8 +16,6 @@ app.use((req, res, next) => {
     next();
 });
 
-const {logs} = require("./log");
-
 // ID et pw à cacher dans des variables d'environnement
 const dbID = process.env.DB_ID; //dbuser
 const dbPW = process.env.DB_PW; //dbUserPassword
@@ -27,10 +25,9 @@ const DB = 'mongodb+srv://dbuser:dbUserPassword@clusterwebservice.nwozssf.mongod
 mongoose.connect(DB, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() =>{
         console.log('Connected to MongoDB');
-        logs.info('Connected to MongoDB')
     })
     .catch((err) => {
-        logs.error('MongoDB ERROR CONNECT', err)
+        console.log('MongoDB ERROR CONNECT', err)
     });
 
 app.use(bodyParser.json());

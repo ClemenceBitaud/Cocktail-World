@@ -3,29 +3,26 @@ const {Schema} = require("mongoose");
 const https = require('https')
 
 exports.getPokemons = (req, res, next) => {
-    console.log("getPokemons method");
 
     Pokemon.find()
         .populate('drink')
         .exec((err, list) => {
-            if (err){res.status(404).json({message: 'NOT FOUND'});}
+            if (err){res.status(404).json({message: 'NOT FOUND', error: err})}
             res.status(200).json(list);
         })
 }
 
 exports.getPokemon = (req, res, next) => {
-    console.log("getPokemon method");
 
     Pokemon.findById(req.params.id)
         .populate('drink')
         .exec((err, d) => {
-            if (err){console.log(err)}
+            if (err){res.status(404).json({message: 'NOT FOUND', error: err})}
             res.status(200).json(d);
         })
 }
 
 exports.createPokemon = (req, res, next) => {
-    console.log("createPokemon method");
 
     const url = `https://pokeapi.co/api/v2/pokemon/${req.body.idPokemon}`;
     https.get(url, resp => {
@@ -37,7 +34,6 @@ exports.createPokemon = (req, res, next) => {
         });
         resp.on('end', () => {
             const pokemonData = JSON.parse(data);
-            console.log(JSON.parse(data).name);
 
             const types = [];
             pokemonData.types.forEach(type => {
@@ -59,15 +55,14 @@ exports.createPokemon = (req, res, next) => {
                 .then((saved) => {
                     res.status(200).json(saved);
                 })
-                .catch(() => res.status(500).json({message: 'Pb avec la création'}));
+                .catch((err) => res.status(500).json({message: 'Pb avec la création', error: err}));
         })
     }).on("error", (err) => {
-        res.status(500).json({message: 'Pb avec la PokéApi'})
+        res.status(500).json({message: 'Pb avec la PokéApi', error: err})
     })
 }
 
 exports.deletePokemon = (req, res, next) => {
-    console.log("deletePokemon method");
 
     Pokemon.findByIdAndDelete(req.params.id)
         .then((result) => {
@@ -78,7 +73,6 @@ exports.deletePokemon = (req, res, next) => {
             }
         })
         .catch((err) => {
-            console.log(err);
             res.status(400).json({message: 'NOT FOUND', error: err})
         })
 }

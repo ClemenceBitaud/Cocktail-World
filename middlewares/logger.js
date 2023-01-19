@@ -7,7 +7,7 @@ const myFormat = printf(({ level, message, timestamp }) => {
     return `${timestamp} [${level}]: ${message}`;
 });
 
-exports.logs = createLogger({
+const logs = createLogger({
     level: 'debug',
     format: combine(
         timestamp(),
@@ -23,3 +23,14 @@ exports.logs = createLogger({
         new transports.File({ filename: 'logs/debug.log', level: 'debug'}),
     ],
 });
+
+module.exports = (req, res, next) => { // next() sert à passer le relai au middleware suivant
+    try {
+        const { method, url, baseUrl } = req;
+        const log = method + ' ' + baseUrl + url;
+        logs.debug(log);
+        next();
+    } catch {
+        res.status(501).json({message: 'Erreur au niveau du middleware : logger'})
+    }
+};

@@ -1,35 +1,31 @@
 const Drink = require("../models/drink");
 const {Schema} = require("mongoose");
-const {logs} = require("../log");
 
 exports.getDrinks = (req, res, next) => {
-    console.log("getDrinks method");
 
     Drink.find()
         .populate('type')
         .populate('categories')
         .populate('ingredients')
         .exec((err, list) => {
-            if (err){res.status(404).json({message: 'NOT FOUND'});}
+            if (err){res.status(404).json({message: 'NOT FOUND', error: err})}
             res.status(200).json(list);
         })
 }
 
 exports.getDrink = (req, res, next) => {
-    console.log("getDrink method");
 
     Drink.findById(req.params.id)
         .populate('type')
         .populate('categories')
         .populate('ingredients')
         .exec((err, d) => {
-            if (err){console.log(err)}
+            if (err){res.status(404).json({message: 'NOT FOUND', error: err})}
             res.status(200).json(d);
         })
 }
 
 exports.createDrink = (req, res, next) => {
-    console.log("createDrink method");
 
     let drink = new Drink({
         name: req.body.name,
@@ -47,11 +43,10 @@ exports.createDrink = (req, res, next) => {
         .then((saved) => {
             res.status(200).json(saved);
         })
-        .catch(() => res.status(500).json({message: 'Pb avec la création'}));
+        .catch((err) => res.status(500).json({message: 'Pb avec la création', error: err}));
 }
 
 exports.updateDrink = (req, res, next) => {
-    console.log("updateDrink method");
 
     Drink.findById(req.params.id)
         .then((drink) => {
@@ -59,18 +54,15 @@ exports.updateDrink = (req, res, next) => {
             Drink.updateOne({ _id: drink.id}, req.body)
                 .then((result) => res.status(200).json(result))
                 .catch((err) => {
-                    console.log(err);
                     res.status(500).json({message: 'CANNOT UPDATE', error: err})
                 })
         })
         .catch((err) => {
-            console.log(err);
-            res.status(404).json({message: 'NOT FOUND'})
+            res.status(404).json({message: 'NOT FOUND', error: err})
         })
 }
 
 exports.deleteDrink = (req, res, next) => {
-    console.log("deleteDrink method");
 
     Drink.findByIdAndDelete(req.params.id)
         .then((result) => {
@@ -81,13 +73,11 @@ exports.deleteDrink = (req, res, next) => {
             }
         })
         .catch((err) => {
-            console.log(err);
             res.status(400).json({message: 'NOT FOUND', error: err})
         })
 }
 
 exports.searchDrink = (req, res, next) => {
-    console.log("searchDrink method");
 
     const search = req.params.search.toLowerCase().replace(/\s/g,'');
 
@@ -114,21 +104,20 @@ exports.searchDrink = (req, res, next) => {
                     }
                 })
             })
-            if (err){res.status(404).json({message: 'NOT FOUND'});}
+            if (err){res.status(404).json({message: 'NOT FOUND', error: err});}
             res.status(200).json(drinks);
         })
 
 }
 
 exports.searchByType = (req, res, next) => {
-    logs.debug("searchByType");
 
     Drink.find({type : req.params.id})
         .populate('type')
         .populate('categories')
         .populate('ingredients')
         .exec((err, list) => {
-            if (err){res.status(404).json({message: 'NOT FOUND'});}
+            if (err){res.status(404).json({message: 'NOT FOUND', error: err});}
             res.status(200).json(list);
         })
 }
@@ -141,19 +130,19 @@ exports.searchByCategory = (req, res, next) => {
         .populate('categories')
         .populate('ingredients')
         .exec((err, list) => {
-            if (err){res.status(404).json({message: 'NOT FOUND'});}
+            if (err){res.status(404).json({message: 'NOT FOUND', error: err});}
             res.status(200).json(list);
         })
 }
 
 exports.randomDrink = (req, res, next) => {
-    logs.debug("random");
+
     Drink.find()
         .populate('type')
         .populate('categories')
         .populate('ingredients')
         .exec((err, list) => {
-            if (err){res.status(404).json({message: 'NOT FOUND'});}
+            if (err){res.status(404).json({message: 'NOT FOUND', error: err});}
 
             const length = list.length;
             const randomIndex = Math.round(Math.random()*length);
