@@ -13,8 +13,7 @@ router.post('/signup', userCtrl.createUser);
 router.post('/login', userCtrl.login);
 router.put('/:id', [auth], userCtrl.updateUser);
 router.delete('/:id', [auth], userCtrl.deleteUser);
-router.get('/:id/favorites', [auth], userCtrl.getUserFavorites);
 router.post('/:id/favorite', [auth], userCtrl.addFavorite);
-router.delete('/:id/favorite', [auth], userCtrl.deleteFavorite);
+router.delete('/:id/favorite/:idDrink', [auth], userCtrl.deleteFavorite);
 
 module.exports = router;

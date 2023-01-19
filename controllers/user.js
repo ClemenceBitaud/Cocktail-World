@@ -19,10 +19,10 @@ exports.getUser = (req, res, next) => {
         logs.debug('getUser - missing id params');
     }
     User.findById(req.params.id)
-        .then((user) => res.status(200).json(user))
-        .catch((err) => {
-            console.log(err);
-            res.status(404).json({message: 'NOT FOUND'});
+        .populate('favorites')
+        .exec((err, user) => {
+            if (err){res.status(404).json({message: 'NOT FOUND'})}
+            res.status(200).json(user)
         })
 }
 
@@ -123,14 +123,47 @@ exports.deleteUser = (req, res, next) => {
         })
 }
 
-exports.getUserFavorites = (req, res, next) => {
-
-}
-
 exports.addFavorite = (req, res, next) => {
+    logs.debug("addFavorite");
+    if (req.params.id === undefined){
+        logs.debug('addFavorite - missing id params');
+    }
+    if (req.body.drinkId === undefined){
+        logs.debug('addFavorite - missing drinkId');
+    }
+    User.findById(req.params.id)
+        .then((user) => {
 
+            const favorites = user.favorites;
+            favorites.push(req.body.drinkId);
+
+            User.updateOne({ _id: user.id}, {favorites: favorites})
+                .then((result) => res.status(200).json(result))
+                .catch((err) => res.status(500).json({message: 'CANNOT UPDATE', error: err}))
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(404).json({message: 'NOT FOUND'});
+        })
 }
 
 exports.deleteFavorite = (req, res, next) => {
+    logs.debug("deleteFavorite");
+    if (req.params.id === undefined){
+        logs.debug('deleteFavorite - missing id params');
+    }
+    if (req.params.idDrink === undefined){
+        logs.debug('deleteFavorite - missing drinkId');
+    }
+    User.findById(req.params.id)
+        .populate('favorites')
+        .exec((err, user) => {
+            if (err){res.status(404).json({message: 'NOT FOUND'})}
 
+            const favorites = user.favorites.filter(cocktail => cocktail.id !== req.params.idDrink);
+
+            User.updateOne({ _id: user.id}, {favorites: favorites})
+                .then((result) => res.status(200).json(result))
+                .catch((err) => res.status(500).json({message: 'CANNOT UPDATE', error: err}))
+        })
 }
