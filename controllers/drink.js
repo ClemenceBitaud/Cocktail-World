@@ -1,5 +1,6 @@
 const Drink = require("../models/drink");
 const {Schema} = require("mongoose");
+const {logs} = require("../log");
 
 exports.getDrinks = (req, res, next) => {
     console.log("getDrinks method");
@@ -117,4 +118,30 @@ exports.searchDrink = (req, res, next) => {
             res.status(200).json(drinks);
         })
 
+}
+
+exports.searchByType = (req, res, next) => {
+    logs.debug("searchByType");
+
+    Drink.find({type : req.params.id})
+        .populate('type')
+        .populate('categories')
+        .populate('ingredients')
+        .exec((err, list) => {
+            if (err){res.status(404).json({message: 'NOT FOUND'});}
+            res.status(200).json(list);
+        })
+}
+
+exports.searchByCategory = (req, res, next) => {
+    logs.debug("searchByCategory");
+
+    Drink.find({categories : req.params.id})
+        .populate('type')
+        .populate('categories')
+        .populate('ingredients')
+        .exec((err, list) => {
+            if (err){res.status(404).json({message: 'NOT FOUND'});}
+            res.status(200).json(list);
+        })
 }

@@ -10,5 +10,6 @@ router.post('/', [auth], drinkCtrl.createDrink);
 router.put('/:id', [auth], drinkCtrl.updateDrink);
 router.delete('/:id', [auth], drinkCtrl.deleteDrink);
 router.get('/search/:search', [auth],drinkCtrl.searchDrink);
-
+router.get('/search/type/:id', [auth], drinkCtrl.searchByType)
+router.get('/search/category/:id', [auth], drinkCtrl.searchByCategory)
 module.exports = router;
