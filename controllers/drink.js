@@ -122,7 +122,6 @@ exports.searchByType = (req, res, next) => {
 }
 
 exports.searchByCategory = (req, res, next) => {
-    logs.debug("searchByCategory");
 
     Drink.find({categories : req.params.id})
         .populate('type')
